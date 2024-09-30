@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room-Chat-App: {{ room }}</title>
-    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="//cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -36,11 +37,15 @@
             border-radius: 8px;
             border: 1px solid #ccc;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            resize: none; /* Disable resizing */
+            animation: zoomIn 0.5s ease;
             background-color: #fff;
-            margin-bottom: 20px; 
-            overflow-y: auto; 
-            font-family: monospace;
-            white-space: pre-wrap;
+            margin-bottom: 20px; /* Space below chat area */
+            overflow-y: auto; /* Enable scrolling */
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         .input-container {
             width: 80%;
@@ -66,7 +71,7 @@
             box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
         }
         .send-button {
-            background-color: #25D366;
+            background-color: #25D366; /* WhatsApp green */
             border: none;
             border-radius: 50%;
             padding: 10px;
@@ -77,7 +82,7 @@
             transition: background-color 0.3s, transform 0.3s;
         }
         .send-button:hover {
-            background-color: #128C7E;
+            background-color: #128C7E; /* Darker green on hover */
             transform: scale(1.1);
         }
         .send-icon {
@@ -87,11 +92,11 @@
         a {
             text-decoration: none;
             color: #fff;
-            background-color: #d9534f;
+            background-color: #d9534f; /* Button color */
             padding: 10px 15px;
             border-radius: 4px;
             transition: background-color 0.3s, transform 0.3s;
-            display: inline-block;
+            display: inline-block; /* Make the link behave like a button */
             margin-top: 10px;
         }
         a:hover {
@@ -107,25 +112,24 @@
         let socket;
         $(document).ready(function(){
             socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
-
             socket.on('connect', function() {
                 socket.emit('joined', {});
             });
-
             socket.on('status', function(data) {
-                appendMessage(`[${new Date().toLocaleTimeString()}] <${data.msg}>\n`);
+                d = new Date();
+                $('#chat').val($('#chat').val() + `[${d.toLocaleTimeString()}] <${data.msg}>\n`);
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
             });
-
             socket.on('message', function(data) {
-                appendMessage(`[${new Date().toLocaleTimeString()}] ${data.msg}\n`);
+                $('#chat').val($('#chat').val() + `[${d.toLocaleTimeString()}] ${data.msg}\n`);
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
             });
-
             $('#text').keypress(function(e) {
-                if (e.keyCode === 13) {  // Enter key
+                const code = e.keyCode || e.which;
+                if (code == 13) {
                     sendMessage();
                 }
             });
-
             $('.send-button').click(function() {
                 sendMessage();
             });
@@ -134,28 +138,23 @@
         function sendMessage() {
             const text = $('#text').val();
             if (text.trim() !== '') {
-                socket.emit('text', { msg: text });
-                $('#text').val('');  // Clear input
+                socket.emit('text', {msg: text});
+                $('#text').val('');
             }
-        }
-
-        function appendMessage(message) {
-            const chatArea = $('#chat');
-            chatArea.append(message);
-            chatArea.scrollTop(chatArea[0].scrollHeight);  // Scroll to the bottom
         }
 
         function leave_room() {
             socket.emit('left', {}, function() {
                 socket.disconnect();
+                // go back to the login page
                 window.location.href = "{{ url_for('main.index') }}";
             });
         }
     </script>
 </head>
 <body>
-    <h1>Room-Chat-App: Room Key: {{ room }}</h1>
-    <div id="chat"></div>  <!-- Use div instead of textarea for flexibility -->
+    <h1>Room-Chat-App:Room Key: {{ room }}</h1>
+    <textarea id="chat" readonly></textarea>
     <div class="input-container">
         <input id="text" type="text" placeholder="Enter your message here">
         <button class="send-button">
