@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 from flask_socketio import join_room, leave_room, send, SocketIO
 import random
 from string import ascii_uppercase
@@ -11,13 +11,9 @@ rooms = {}
 
 def generate_unique_code(length):
     while True:
-        code = ""
-        for _ in range(length):
-            code += random.choice(ascii_uppercase)
-        
+        code = "".join(random.choice(ascii_uppercase) for _ in range(length))
         if code not in rooms:
             break
-    
     return code
 
 @app.route("/", methods=["POST", "GET"])
@@ -47,14 +43,19 @@ def home():
         return redirect(url_for("room"))
 
     return render_template("home.html")
-
 @app.route("/room")
 def room():
     room = session.get("room")
     if room is None or session.get("name") is None or room not in rooms:
         return redirect(url_for("home"))
+    return render_template("room.html", code=room)
 
-    return render_template("room.html", code=room, messages=rooms[room]["messages"])
+@app.route("/messages")
+def get_messages():
+    room = session.get("room")
+    if room not in rooms:
+        return jsonify([])  # Return an empty list if room does not exist
+    return jsonify(rooms[room]["messages"])  # Return messages as JSON
 
 @socketio.on("message")
 def message(data):
@@ -66,10 +67,9 @@ def message(data):
         "name": session.get("name"),
         "message": data["data"]
     }
-    send(content, to=room)  # Emit the message to the room
-    rooms[room]["messages"].append(content)  # Store the message
+    send(content, to=room)
+    rooms[room]["messages"].append(content)
     print(f"{session.get('name')} said: {data['data']}")
-
 
 @socketio.on("connect")
 def connect(auth):
