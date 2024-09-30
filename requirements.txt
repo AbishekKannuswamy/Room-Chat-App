@@ -9,6 +9,7 @@ flask-socketio
 python-socketio
 python-engineio
 flask-wtf
+gunicorn
 
 bidict==0.23.1
     # via python-socketio
