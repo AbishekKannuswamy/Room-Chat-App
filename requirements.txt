@@ -10,6 +10,8 @@ python-socketio
 python-engineio
 flask-wtf
 gunicorn
+flask-cors
+
 
 bidict==0.23.1
     # via python-socketio
