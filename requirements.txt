@@ -12,8 +12,6 @@ flask-wtf
 gunicorn
 flask-cors
 
-Flask==2.0.2
-Flask-SocketIO==5.1.1
 eventlet==0.33.0  # For asynchronous support with WebSocket
 
 bidict==0.23.1
