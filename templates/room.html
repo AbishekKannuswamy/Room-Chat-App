@@ -31,8 +31,10 @@
         </span>
     </div>
     `;
-    messages.innerHTML += content;
-  };
+    messages.innerHTML += content; // Append new message
+    messages.scrollTop = messages.scrollHeight; // Scroll to bottom
+};
+
 
   socketio.on("message", (data) => {
     createMessage(data.name, data.message);
@@ -42,11 +44,13 @@
     const message = document.getElementById("message");
     if (message.value == "") return;
     socketio.emit("message", { data: message.value });
-    message.value = "";
-  };
+    message.value = ""; // Clear input after sending
+};
+
 </script>
 {% for msg in messages %}
 <script type="text/javascript">
-  createMessage("{{msg.name}}", "{{msg.message}}");
+  createMessage("{{ msg.name }}", "{{ msg.message }}");
 </script>
-{% endfor %} {% endblock %}
+{% endfor %}
+{% endblock %}

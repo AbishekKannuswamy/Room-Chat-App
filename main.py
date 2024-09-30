@@ -66,9 +66,10 @@ def message(data):
         "name": session.get("name"),
         "message": data["data"]
     }
-    send(content, to=room)
-    rooms[room]["messages"].append(content)
+    send(content, to=room)  # Emit the message to the room
+    rooms[room]["messages"].append(content)  # Store the message
     print(f"{session.get('name')} said: {data['data']}")
+
 
 @socketio.on("connect")
 def connect(auth):
