@@ -4,6 +4,12 @@
 #
 #    pip-compile --strip-extras /home/miguel/Documents/dev/microblog/flask-socketio-chat/pyproject.toml
 #
+flask
+flask-socketio
+python-socketio
+python-engineio
+flask-wtf
+
 bidict==0.23.1
     # via python-socketio
 blinker==1.8.2
