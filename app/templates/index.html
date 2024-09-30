@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room-Chat-App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            animation: fadeIn 1s ease-in;
+            text-align: center; /* Center align text */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            animation: zoomIn 0.5s ease;
+            display: inline-block; /* Center the container */
+            margin: 0 auto; /* Auto margin to center */
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .form-group {
+            margin: 10px 0; /* Add spacing between form fields */
+            text-align: left; /* Align labels and inputs to the left */
+        }
+        input[type="text"] {
+            width: 280px; /* Fixed width for text boxes */
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: #5cb85c;
+            box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
+        }
+        input[type="submit"] {
+            background: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        input[type="submit"]:hover {
+            background: #4cae4c;
+            transform: translateY(-2px);
+        }
+        input[type="submit"]:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Room-Chat-App</h1>
+        <div class="container">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.name.label }}: {{ form.name() }} 
+                    {% for error in form.name.errors %}<span class="error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.room.label }}: {{ form.room() }} 
+                    {% for error in form.room.errors %}<span class="error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.submit() }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Include your Socket.IO script here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+    <script>
+        // Your JavaScript code to handle Socket.IO connections can go here
+    </script>
+</body>
+</html>
