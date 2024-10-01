@@ -4,9 +4,6 @@
 #
 #    pip-compile --strip-extras /home/miguel/Documents/dev/microblog/flask-socketio-chat/pyproject.toml
 #
-python-socketio
-python-engineio
-flask-wtf
 gunicorn
 
 bidict==0.23.1
